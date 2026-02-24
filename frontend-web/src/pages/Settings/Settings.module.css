@@ -58,8 +58,8 @@
 }
 
 .tabBtn.active {
-  background: rgba(0, 255, 136, 0.1);
-  color: var(--primary-green);
+  background: rgba(26, 86, 219, 0.1);
+  color: var(--color-primary);
 }
 
 .tabIcon {
@@ -104,13 +104,14 @@
   width: 80px;
   height: 80px;
   border-radius: var(--radius-lg);
-  background: var(--primary-green);
-  color: var(--bg-primary);
+  background: linear-gradient(135deg, #1a56db, #3b82f6);
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
   font-weight: 700;
+  flex-shrink: 0;
 }
 
 .profileInfo {
@@ -132,12 +133,12 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.375rem 0.75rem;
-  background: rgba(0, 255, 136, 0.1);
-  border: 1px solid rgba(0, 255, 136, 0.3);
+  padding: 0.25rem 0.6rem;
+  background: rgba(26, 86, 219, 0.12);
+  border: 1px solid rgba(26, 86, 219, 0.3);
   border-radius: var(--radius-full);
-  color: var(--primary-green);
-  font-size: 0.75rem;
+  color: #60a5fa;
+  font-size: 0.7rem;
   font-weight: 700;
 }
 
@@ -217,8 +218,8 @@
 }
 
 .toggle input:checked + .toggleSlider {
-  background: var(--primary-green);
-  border-color: var(--primary-green);
+  background: #1a56db;
+  border-color: #1a56db;
 }
 
 .toggle input:checked + .toggleSlider:before {
@@ -245,12 +246,13 @@
 .notificationIcon {
   width: 48px;
   height: 48px;
-  background: rgba(0, 255, 136, 0.1);
+  background: rgba(26, 86, 219, 0.1);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
+  flex-shrink: 0;
 }
 
 .notificationInfo {
@@ -300,8 +302,8 @@
 .input:focus,
 .select:focus {
   outline: none;
-  border-color: var(--primary-green);
-  box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+  border-color: #1a56db;
+  box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.12);
 }
 
 .securityActions {
@@ -355,14 +357,14 @@
 }
 
 .btnPrimary {
-  background: var(--primary-green);
-  color: var(--bg-primary);
+  background: linear-gradient(135deg, #1a56db, #3b82f6);
+  color: #fff;
   border: none;
 }
 
 .btnPrimary:hover {
-  background: var(--primary-green-light);
-  box-shadow: var(--shadow-glow);
+  opacity: 0.9;
+  box-shadow: 0 4px 16px rgba(26, 86, 219, 0.3);
 }
 
 .btnSecondary {
@@ -379,8 +381,166 @@
   .settingsContainer {
     grid-template-columns: 1fr;
   }
-  
   .sidebar {
     position: static;
   }
 }
+
+/* ── New classes for rewritten Settings.jsx ─────────────────── */
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+.logoutBtn {
+  width: 100%;
+  margin-top: 16px;
+  padding: 10px;
+  border: 1px solid rgba(239,68,68,0.3);
+  border-radius: 8px;
+  background: transparent;
+  color: #ef4444;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.logoutBtn:hover { background: rgba(239,68,68,0.08); }
+
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: fadeIn 0.25s ease;
+}
+.toastSuccess { background: #15803d; color: #fff; }
+.toastError   { background: #b91c1c; color: #fff; }
+.toastClose   { background: none; border: none; color: inherit; cursor: pointer; font-size: 1.1rem; margin-left: 4px; }
+@keyframes fadeIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 640px) { .formRow { grid-template-columns: 1fr; } }
+
+.fieldLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.planBadge {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  background: rgba(26, 86, 219, 0.15);
+  border: 1px solid rgba(26, 86, 219, 0.3);
+  border-radius: 20px;
+  color: #60a5fa;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.securityBlock {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.securityBlock h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.dangerBtn {
+  background: rgba(239,68,68,0.12) !important;
+  border-color: rgba(239,68,68,0.4) !important;
+  color: #ef4444 !important;
+}
+
+.twoFaRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.twoFaStatus { color: var(--text-secondary); }
+.twoFaOff    { color: #94a3b8; font-weight: 600; }
+
+.notificationTypes {
+  margin-top: 24px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 12px;
+  padding: 20px;
+}
+.notificationTypes h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; }
+.checkItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+.checkItem input { accent-color: #1a56db; width: 16px; height: 16px; }
+
+.infoBox {
+  background: rgba(26,86,219,0.08);
+  border: 1px solid rgba(26,86,219,0.2);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 0.85rem;
+  color: #93c5fd;
+}
+
+.apiKeysList { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+.apiKeyCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 10px;
+  padding: 16px;
+  flex-wrap: wrap;
+}
+.apiKeyInfo { display: flex; flex-direction: column; gap: 4px; }
+.apiKey {
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: #60a5fa;
+  background: rgba(26,86,219,0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.apiKeyMeta { font-size: 0.75rem; color: var(--text-secondary); }
+.apiKeyActive { color: #22c55e; }
+.apiKeyActions { display: flex; gap: 8px; }
+.danger { color: #ef4444 !important; border-color: rgba(239,68,68,0.4) !important; }

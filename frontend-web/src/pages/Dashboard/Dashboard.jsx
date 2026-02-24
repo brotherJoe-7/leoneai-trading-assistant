@@ -214,10 +214,16 @@ const Dashboard = () => {
           </div>
           <div className={styles.chartArea}>
             <svg viewBox="0 0 700 250" className={styles.chart}>
+              <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.6" />
+                  <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0" />
+                </linearGradient>
+              </defs>
               <path
                 d="M 0 200 L 100 180 L 200 150 L 300 120 L 400 140 L 500 100 L 600 80 L 700 60"
                 fill="none"
-                stroke="var(--primary-green)"
+                stroke="var(--color-primary)"
                 strokeWidth="3"
               />
               <path
@@ -225,12 +231,6 @@ const Dashboard = () => {
                 fill="url(#gradient)"
                 opacity="0.3"
               />
-              <defs>
-                <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="var(--primary-green)" stopOpacity="0.6" />
-                  <stop offset="100%" stopColor="var(--primary-green)" stopOpacity="0" />
-                </linearGradient>
-              </defs>
             </svg>
           </div>
         </div>

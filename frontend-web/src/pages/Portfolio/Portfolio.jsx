@@ -8,7 +8,7 @@ const PAYMENT_METHODS = [
     value: 'Orange Money',
     label: '🇸🇱 Orange Money',
     type: 'mobile',
-    placeholder: 'Enter mobile number (e.g. +232 76 000000)',
+    placeholder: 'Enter mobile number (e.g. 074266392)',
   },
   {
     value: 'Afrimoney',
