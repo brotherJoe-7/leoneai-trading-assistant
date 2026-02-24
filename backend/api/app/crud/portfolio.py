@@ -16,10 +16,10 @@ class PortfolioCRUD:
     def create(self, db: Session, user_id: int) -> Portfolio:
         db_portfolio = Portfolio(
             user_id=user_id,
-            cash_balance=100000.0,
-            cash_balance_leone=2200000000.0,
-            total_value=100000.0,
-            total_value_leone=2200000000.0,
+            cash_balance=0.0,
+            cash_balance_leone=0.0,
+            total_value=0.0,
+            total_value_leone=0.0,
         )
         db.add(db_portfolio)
         db.commit()

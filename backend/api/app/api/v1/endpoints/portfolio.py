@@ -149,6 +149,20 @@ async def execute_trade(
         )
 
 
+def _normalize_phone(phone):
+    """Accept 074266392, +232074266392, 00232074266392 — normalise to +232XXXXXXXX"""
+    if not phone:
+        return phone
+    phone = str(phone).strip().replace(" ", "").replace("-", "")
+    if phone.startswith("00232"):
+        phone = "+" + phone[2:]
+    elif phone.startswith("232") and not phone.startswith("+"):
+        phone = "+232" + phone[3:]
+    elif not phone.startswith("+"):
+        phone = "+232" + phone
+    return phone
+
+
 @router.post("/deposit")
 async def deposit_funds(
     body: DepositRequest,
@@ -180,9 +194,8 @@ async def deposit_funds(
         txn_id = f"DEP-{int(datetime.utcnow().timestamp())}"
 
         if payment_method in MOBILE_METHODS:
-            detail_msg = f"via {payment_method}" + (
-                f" to {body.phone_number}" if body.phone_number else ""
-            )
+            phone = _normalize_phone(body.phone_number)
+            detail_msg = f"via {payment_method}" + (f" to {phone}" if phone else "")
         elif payment_method == "PayPal":
             detail_msg = f"via PayPal" + (f" ({body.email})" if body.email else "")
         else:

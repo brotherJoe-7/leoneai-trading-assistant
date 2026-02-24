@@ -83,9 +83,42 @@ const Dashboard = () => {
         </button>
       </header>
 
+      {/* ── Server status banner ─────────────────────────────── */}
       {error && (
         <div className={styles.errorBanner}>
-          <span>⚠️</span> {error} - Showing cached data
+          {error.includes('Network') || error.includes('ERR_') ? (
+            <>
+              🔴 <strong>Backend server is offline.</strong> Start it with:{' '}
+              <code
+                style={{
+                  fontSize: '0.8rem',
+                  background: 'rgba(0,0,0,0.3)',
+                  padding: '2px 6px',
+                  borderRadius: 4,
+                }}
+              >
+                .\start-backend.ps1
+              </code>{' '}
+              — Showing sample data in the meantime.
+            </>
+          ) : (
+            <>⚠️ Could not reach API — showing demo data. </>
+          )}
+          <button
+            onClick={fetchDashboardData}
+            style={{
+              marginLeft: 12,
+              padding: '2px 10px',
+              borderRadius: 6,
+              border: '1px solid rgba(255,255,255,0.3)',
+              background: 'transparent',
+              color: 'inherit',
+              cursor: 'pointer',
+              fontSize: '0.8rem',
+            }}
+          >
+            Retry
+          </button>
         </div>
       )}
 

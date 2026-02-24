@@ -27,7 +27,7 @@ const COURSES = [
       },
     ],
     emoji: '🌱',
-    color: '#22c55e',
+    color: '#1a56db',
   },
   {
     id: 2,
@@ -69,7 +69,7 @@ const COURSES = [
       },
     ],
     emoji: '🌊',
-    color: '#f59e0b',
+    color: '#0369a1',
   },
 ];
 
