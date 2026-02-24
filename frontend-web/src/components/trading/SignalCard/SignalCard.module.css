@@ -1,0 +1,195 @@
+.signalCard {
+  background-color: var(--colors-surface);
+  border: 1px solid var(--colors-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+  transition: all var(--transition-normal);
+}
+
+.signalCard:hover {
+  border-color: var(--colors-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Action colors */
+.buy {
+  border-left: 4px solid var(--colors-buy);
+}
+
+.sell {
+  border-left: 4px solid var(--colors-sell);
+}
+
+.hold {
+  border-left: 4px solid var(--colors-hold);
+}
+
+.neutral {
+  border-left: 4px solid var(--colors-text-secondary);
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--colors-border);
+}
+
+.symbol {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.symbolText {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--colors-text);
+}
+
+.actionBadge {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.buy .actionBadge {
+  background-color: rgba(16, 185, 129, 0.2);
+  color: var(--colors-buy);
+}
+
+.sell .actionBadge {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: var(--colors-sell);
+}
+
+.hold .actionBadge {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: var(--colors-hold);
+}
+
+.neutral .actionBadge {
+  background-color: rgba(160, 160, 160, 0.2);
+  color: var(--colors-text-secondary);
+}
+
+/* Confidence */
+.confidence {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.confidenceBar {
+  width: 100px;
+  height: 8px;
+  background-color: var(--colors-surface-light);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.confidenceFill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
+}
+
+.riskLow {
+  background-color: var(--colors-buy);
+}
+
+.riskMedium {
+  background-color: var(--colors-hold);
+}
+
+.riskHigh {
+  background-color: var(--colors-sell);
+}
+
+.confidenceText {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  min-width: 45px;
+}
+
+/* Content */
+.content {
+  margin-bottom: var(--spacing-md);
+}
+
+.strategy,
+.price,
+.reason,
+.target {
+  margin-bottom: var(--spacing-sm);
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-sm);
+}
+
+.label {
+  font-size: var(--font-size-sm);
+  color: var(--colors-text-secondary);
+  min-width: 70px;
+}
+
+.value {
+  font-size: var(--font-size-md);
+  color: var(--colors-text);
+  font-weight: 500;
+}
+
+.leone {
+  font-size: var(--font-size-sm);
+  color: var(--colors-primary);
+  margin-left: var(--spacing-xs);
+}
+
+.reasonText {
+  flex: 1;
+  font-size: var(--font-size-sm);
+  color: var(--colors-text);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.targets {
+  display: flex;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-md);
+}
+
+.targetPrice {
+  color: var(--colors-buy);
+}
+
+.stopLoss {
+  color: var(--colors-sell);
+}
+
+/* Footer */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--colors-border);
+}
+
+.timestamp {
+  font-size: var(--font-size-xs);
+  color: var(--colors-text-secondary);
+}
+
+.actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}

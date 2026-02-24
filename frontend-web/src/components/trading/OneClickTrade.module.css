@@ -1,0 +1,98 @@
+.container {
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
+    border: 1px solid var(--primary-green);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.header h4 {
+    margin: 0;
+    color: var(--primary-green);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.status {
+    font-size: 0.7rem;
+    background: var(--primary-green);
+    color: black;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.amountSelector {
+    margin-bottom: 1rem;
+}
+
+.amountSelector input {
+    width: 100%;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    padding: 0.5rem;
+    color: white;
+    margin: 0.5rem 0;
+    border-radius: var(--radius-sm);
+}
+
+.presets {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.presets button {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    color: var(--text-secondary);
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    flex: 1;
+}
+
+.presets button:hover {
+    border-color: var(--primary-green);
+    color: white;
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn {
+    flex: 1;
+    padding: 1rem;
+    border: none;
+    font-weight: 900;
+    cursor: pointer;
+    font-size: 1.1rem;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    border-radius: var(--radius-md);
+    transition: transform 0.1s;
+}
+
+.btn:active {
+    transform: scale(0.95);
+}
+
+.buyBtn {
+    background: var(--primary-green);
+    color: black;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+}
+
+.sellBtn {
+    background: #ff4d4d;
+    color: white;
+    box-shadow: 0 0 15px rgba(255, 77, 77, 0.3);
+}

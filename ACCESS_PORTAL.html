@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LeoneAI Trading Assistant - Access Portal</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .container {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        max-width: 800px;
+        width: 100%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      }
+
+      h1 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 2.5em;
+      }
+
+      .subtitle {
+        color: #666;
+        margin-bottom: 30px;
+        font-size: 1.1em;
+      }
+
+      .status {
+        background: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        font-weight: 500;
+      }
+
+      .links {
+        display: grid;
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .link-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        padding: 25px;
+        color: white;
+        text-decoration: none;
+        display: block;
+        transition:
+          transform 0.3s,
+          box-shadow 0.3s;
+      }
+
+      .link-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .link-card h2 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+      }
+
+      .link-card p {
+        opacity: 0.9;
+        margin-bottom: 10px;
+      }
+
+      .link-card .url {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 8px 12px;
+        border-radius: 5px;
+        font-family: "Courier New", monospace;
+        font-size: 0.9em;
+      }
+
+      .credentials {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .credentials h3 {
+        color: #856404;
+        margin-bottom: 15px;
+      }
+
+      .cred-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #ffeaa7;
+      }
+
+      .cred-item:last-child {
+        border-bottom: none;
+      }
+
+      .cred-label {
+        font-weight: 600;
+        color: #856404;
+      }
+
+      .cred-value {
+        font-family: "Courier New", monospace;
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🚀 LeoneAI Trading Assistant</h1>
+      <p class="subtitle">Your AI-Powered Trading Platform</p>
+
+      <div class="status">✅ System is running and ready to use!</div>
+
+      <div class="links">
+        <a href="http://localhost:5173" class="link-card" target="_blank">
+          <h2>📊 Main Application</h2>
+          <p>
+            Access the full trading dashboard, portfolio, and market analysis
+          </p>
+          <div class="url">http://localhost:5173</div>
+        </a>
+
+        <a
+          href="http://localhost:5173/admin/dashboard"
+          class="link-card"
+          target="_blank"
+        >
+          <h2>⚙️ Admin Dashboard</h2>
+          <p>Manage users, monitor trades, and view system statistics</p>
+          <div class="url">http://localhost:5173/admin/dashboard</div>
+        </a>
+
+        <a href="http://127.0.0.1:8000/docs" class="link-card" target="_blank">
+          <h2>📚 API Documentation</h2>
+          <p>Interactive API documentation and testing interface</p>
+          <div class="url">http://127.0.0.1:8000/docs</div>
+        </a>
+      </div>
+
+      <div class="credentials">
+        <h3>🔑 Admin Credentials</h3>
+        <div class="cred-item">
+          <span class="cred-label">Email:</span>
+          <span class="cred-value">admin@leoneai.com</span>
+        </div>
+        <div class="cred-item">
+          <span class="cred-label">Password:</span>
+          <span class="cred-value">admin123</span>
+        </div>
+        <div class="cred-item">
+          <span class="cred-label">Role:</span>
+          <span class="cred-value">Superuser (Full Access)</span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

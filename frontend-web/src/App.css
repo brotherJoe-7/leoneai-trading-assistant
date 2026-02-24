@@ -1,0 +1,25 @@
+@import './styles/design-system.css';
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--bg-primary);
+}
+
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 200px;
+  background: var(--bg-primary);
+  min-height: 100vh;
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+  }
+}

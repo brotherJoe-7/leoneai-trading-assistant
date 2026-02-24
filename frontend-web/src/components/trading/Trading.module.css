@@ -1,0 +1,160 @@
+.orderBook {
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  width: 100%;
+  max-width: 320px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-primary);
+  padding-bottom: 0.5rem;
+}
+
+.header h3 {
+  color: var(--text-primary);
+  margin: 0;
+  font-size: 1rem;
+}
+
+.symbol {
+  color: var(--text-secondary);
+}
+
+.tableHeader {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.15rem 0;
+}
+
+.row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.sellPrice {
+  color: #ff4d4d;
+}
+
+.buyPrice {
+  color: #00ff88;
+}
+
+.spread {
+  text-align: center;
+  margin: 0.5rem 0;
+  padding: 0.25rem;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.currentPrice {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.spreadPercent {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+/* Modal Styles for Advanced Order */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modalContent {
+    background: var(--bg-card);
+    width: 400px;
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-primary);
+}
+
+.tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-primary);
+}
+
+.tab {
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.activeTab {
+    color: var(--primary-green);
+    border-bottom: 2px solid var(--primary-green);
+}
+
+.formGroup {
+    margin-bottom: 1rem;
+}
+
+.formGroup label {
+    display: block;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+}
+
+.formGroup input, .formGroup select {
+    width: 100%;
+    padding: 0.5rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    color: var(--text-primary);
+    border-radius: var(--radius-sm);
+}
+
+.buttonGroup {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+}
+
+.cancelBtn {
+    background: transparent;
+    border: 1px solid var(--border-primary);
+    color: var(--text-primary);
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+.confirmBtn {
+    background: var(--primary-green);
+    border: none;
+    color: #000;
+    padding: 0.5rem 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+}

@@ -1,0 +1,150 @@
+.header {
+  background-color: var(--colors-surface);
+  border-bottom: 1px solid var(--colors-border);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  background-color: rgba(26, 26, 26, 0.95);
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 64px;
+}
+
+.logoSection {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xl);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: var(--font-size-xl);
+  color: var(--colors-text);
+  transition: color var(--transition-fast);
+}
+
+.logo:hover {
+  color: var(--colors-primary);
+}
+
+.logoIcon {
+  font-size: 24px;
+}
+
+.logoText {
+  background: linear-gradient(90deg, var(--colors-primary), var(--colors-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.nav {
+  display: flex;
+  gap: var(--spacing-lg);
+}
+
+.navLink {
+  text-decoration: none;
+  color: var(--colors-text-secondary);
+  font-size: var(--font-size-md);
+  font-weight: 500;
+  padding: var(--spacing-sm) 0;
+  position: relative;
+  transition: color var(--transition-fast);
+}
+
+.navLink:hover {
+  color: var(--colors-text);
+}
+
+.navLink::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--colors-primary);
+  transition: width var(--transition-fast);
+}
+
+.navLink:hover::after {
+  width: 100%;
+}
+
+.userSection {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.userInfo {
+  text-align: right;
+  margin-right: var(--spacing-md);
+}
+
+.balance {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin-bottom: 2px;
+}
+
+.balanceLabel {
+  font-size: var(--font-size-xs);
+  color: var(--colors-text-secondary);
+}
+
+.balanceAmount {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--colors-text);
+}
+
+.leoneBalance {
+  font-size: var(--font-size-xs);
+  color: var(--colors-primary);
+  background-color: rgba(30, 181, 58, 0.1);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+
+.userName {
+  font-size: var(--font-size-sm);
+  color: var(--colors-text-secondary);
+}
+
+.actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.authButtons {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.planBadge {
+  display: inline-block;
+  background: linear-gradient(90deg, var(--colors-primary), var(--colors-secondary));
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: var(--radius-full, 999px);
+  margin-bottom: 3px;
+  text-transform: uppercase;
+}

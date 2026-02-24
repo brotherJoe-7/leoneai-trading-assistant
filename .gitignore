@@ -1,0 +1,44 @@
+# ── Python ──────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# ── Database / secrets ───────────────────────
+*.db
+*.sqlite3
+*.sqlite
+backend/api/.env
+frontend-web/.env
+frontend-web/.env.production
+.env
+.env.*
+!.env.example
+!frontend-web/.env.example
+
+# ── Node / Frontend ──────────────────────────
+node_modules/
+frontend-web/dist/
+frontend-web/.vite/
+.npm
+
+# ── IDE / OS ─────────────────────────────────
+.vscode/
+.idea/
+*.DS_Store
+Thumbs.db
+
+# ── Logs ─────────────────────────────────────
+*.log
+logs/
+
+# ── Test artifacts ────────────────────────────
+.pytest_cache/
+htmlcov/
+.coverage
