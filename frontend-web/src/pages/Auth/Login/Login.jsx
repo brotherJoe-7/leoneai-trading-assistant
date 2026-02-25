@@ -12,6 +12,7 @@ const Login = () => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [socialInfo, setSocialInfo] = useState('');
 
   const handleChange = e => {
     setFormData({
@@ -44,11 +45,13 @@ const Login = () => {
   };
 
   const handleGoogleSignIn = () => {
-    alert('Google Sign-In coming soon! For now, please use email/password login.');
+    setSocialInfo('Google Sign-In is coming soon! Please use email/password login for now.');
+    setTimeout(() => setSocialInfo(''), 4000);
   };
 
   const handleAppleSignIn = () => {
-    alert('Apple Sign-In coming soon! For now, please use email/password login.');
+    setSocialInfo('Apple Sign-In is coming soon! Please use email/password login for now.');
+    setTimeout(() => setSocialInfo(''), 4000);
   };
 
   return (
@@ -172,7 +175,9 @@ const Login = () => {
             </button>
           </div>
 
-          <div className={styles.divider}></div>
+          {socialInfo && <div className={styles.socialInfo}>ℹ️ {socialInfo}</div>}
+
+          <div className={styles.divider} />
 
           <p className={styles.signupLink}>
             Don't have an account? <Link to="/register">Sign up</Link>
