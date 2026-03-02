@@ -1,3 +1,4 @@
+import re
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -29,10 +30,94 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# CORS middleware
+# ── CORS — allow localhost + all vercel.app subdomains ──────────────
+ALLOWED_ORIGINS_EXACT = [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:3000",
+    "https://leoneai.vercel.app",
+    "https://leoneai-trading-assistant.vercel.app",
+]
+
+
+def is_allowed_origin(origin: str) -> bool:
+    if origin in ALLOWED_ORIGINS_EXACT:
+        return True
+    # Allow all *.vercel.app subdomains
+    if re.match(r"^https://[\w-]+\.vercel\.app$", origin):
+        return True
+    return False
+
+
+class DynamicCORSMiddleware:
+    """CORS middleware that accepts *.vercel.app via regex."""
+
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] == "http":
+            headers = dict(scope.get("headers", []))
+            origin = headers.get(b"origin", b"").decode("utf-8", errors="ignore")
+
+            async def send_with_cors(message):
+                if (
+                    message["type"] == "http.response.start"
+                    and origin
+                    and is_allowed_origin(origin)
+                ):
+                    headers_list = list(message.get("headers", []))
+                    headers_list += [
+                        (b"access-control-allow-origin", origin.encode()),
+                        (b"access-control-allow-credentials", b"true"),
+                        (
+                            b"access-control-allow-methods",
+                            b"GET, POST, PUT, PATCH, DELETE, OPTIONS",
+                        ),
+                        (
+                            b"access-control-allow-headers",
+                            b"*, Authorization, Content-Type",
+                        ),
+                        (b"vary", b"Origin"),
+                    ]
+                    message = {**message, "headers": headers_list}
+                await send(message)
+
+            # Handle OPTIONS preflight
+            if scope["method"] == "OPTIONS" if "method" in scope else False:
+                await send(
+                    {
+                        "type": "http.response.start",
+                        "status": 200,
+                        "headers": [
+                            (
+                                b"access-control-allow-origin",
+                                origin.encode() if origin else b"*",
+                            ),
+                            (b"access-control-allow-credentials", b"true"),
+                            (
+                                b"access-control-allow-methods",
+                                b"GET, POST, PUT, PATCH, DELETE, OPTIONS",
+                            ),
+                            (
+                                b"access-control-allow-headers",
+                                b"*, Authorization, Content-Type",
+                            ),
+                            (b"content-length", b"0"),
+                        ],
+                    }
+                )
+                await send({"type": "http.response.body", "body": b""})
+                return
+
+            await self.app(scope, receive, send_with_cors)
+        else:
+            await self.app(scope, receive, send)
+
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
+    allow_origins=ALLOWED_ORIGINS_EXACT,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -103,15 +188,22 @@ async def add_security_headers(request: Request, call_next):
     """Add security headers to all responses"""
     response = await call_next(request)
 
-    # Content Security Policy
+    # Content Security Policy — allow TradingView, Binance, Google Fonts
     response.headers["Content-Security-Policy"] = (
         "default-src 'self'; "
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://appleid.cdn-apple.com; "
-        "style-src 'self' 'unsafe-inline'; "
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' "
+        "  https://s.tradingview.com https://widget.tradingview.com "
+        "  https://accounts.google.com https://appleid.cdn-apple.com; "
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
         "img-src 'self' data: https:; "
-        "font-src 'self' data:; "
-        "connect-src 'self' https://api.coingecko.com; "
-        "frame-src 'self' https://accounts.google.com https://appleid.apple.com;"
+        "font-src 'self' data: https://fonts.gstatic.com; "
+        "connect-src 'self' "
+        "  https://api.binance.com wss://stream.binance.com "
+        "  https://api.coingecko.com "
+        "  https://*.vercel.app https://*.railway.app; "
+        "frame-src 'self' "
+        "  https://s.tradingview.com https://widget.tradingview.com "
+        "  https://accounts.google.com https://appleid.apple.com;"
     )
 
     # Prevent MIME type sniffing
