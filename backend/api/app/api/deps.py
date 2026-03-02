@@ -28,27 +28,27 @@ def get_db() -> Generator:
 def get_current_user(
     db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)
 ) -> User:
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials. Please log in again.",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
     try:
         payload = jwt.decode(
             token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM]
         )
         username: str = payload.get("sub")
         if username is None:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Could not validate credentials",
-            )
+            raise credentials_exception
         token_data = TokenData(username=username)
     except (JWTError, ValidationError):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Could not validate credentials",
-        )
+        raise credentials_exception
     user = crud_user.get_by_username(db, username=token_data.username)
     if not user:
-        # print(f"DEBUG: User not found for username: {token_data.username}")
         raise HTTPException(
-            status_code=404, detail=f"User not found: {token_data.username}"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User account not found. Please log in again.",
+            headers={"WWW-Authenticate": "Bearer"},
         )
     return user
 

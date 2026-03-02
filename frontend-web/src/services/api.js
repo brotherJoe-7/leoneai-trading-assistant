@@ -31,9 +31,19 @@ api.interceptors.response.use(
   response => response,
   async error => {
     const originalRequest = error.config;
+    const status = error.response?.status;
 
-    // If 401 and we haven't tried to refresh yet
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    // ── Network / timeout — server genuinely unreachable ──────────
+    if (!error.response) {
+      const networkError = new Error(
+        'Cannot connect to server. Please ensure the backend is running.'
+      );
+      networkError.isNetworkError = true;
+      return Promise.reject(networkError);
+    }
+
+    // ── 401 or 403 — token invalid/expired ────────────────────────
+    if ((status === 401 || status === 403) && !originalRequest._retry) {
       originalRequest._retry = true;
 
       const refreshToken = localStorage.getItem('refresh_token');
@@ -47,27 +57,19 @@ api.interceptors.response.use(
 
           const { access_token, refresh_token: newRefreshToken } = response.data;
 
-          // Update tokens
           localStorage.setItem('token', access_token);
           if (newRefreshToken) {
             localStorage.setItem('refresh_token', newRefreshToken);
           }
 
-          // Retry original request with new token
           originalRequest.headers.Authorization = `Bearer ${access_token}`;
           return axios(originalRequest);
         } catch (refreshError) {
-          // Refresh failed - logout user
           console.error('Token refresh failed:', refreshError);
-          localStorage.removeItem('token');
-          localStorage.removeItem('refresh_token');
-          localStorage.removeItem('user');
-          window.location.href = '/login';
-          return Promise.reject(refreshError);
         }
       }
 
-      // No refresh token - logout
+      // Clear session and redirect to login
       localStorage.removeItem('token');
       localStorage.removeItem('refresh_token');
       localStorage.removeItem('user');
