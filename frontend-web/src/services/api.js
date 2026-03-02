@@ -84,32 +84,30 @@ api.interceptors.response.use(
 export const authAPI = {
   login: async (username, password) => {
     try {
-      const formData = new FormData();
-      formData.append('username', username);
-      formData.append('password', password);
+      // Use URLSearchParams for OAuth2 form encoding (works with CORS)
+      const params = new URLSearchParams();
+      params.append('username', username);
+      params.append('password', password);
 
-      const response = await axios.post(`${API_BASE_URL}/api/v1/auth/login`, formData, {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        timeout: 10000, // 10 second timeout
+      const response = await api.post('/api/v1/auth/login', params, {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        timeout: 10000,
       });
       return response.data;
     } catch (error) {
-      // Handle specific error cases
-      if (error.code === 'ECONNABORTED') {
-        throw new Error('Login request timed out. Please check your connection and try again.');
+      // Network error (server down / unreachable)
+      if (!error.response) {
+        throw new Error(
+          'Cannot connect to server. Please ensure the backend is running at http://localhost:8000'
+        );
       }
-      if (error.code === 'ERR_NETWORK' || error.message === 'Network Error') {
-        throw new Error('Cannot connect to server. Please ensure the backend is running.');
-      }
-      if (error.response?.status === 401) {
-        throw new Error('Invalid username or password');
+      if (error.response?.status === 401 || error.response?.status === 400) {
+        throw new Error('Invalid username or password. Please try again.');
       }
       if (error.response?.status === 500) {
         throw new Error('Server error. Please try again later.');
       }
-      throw error;
+      throw new Error(error.response?.data?.detail || 'Login failed. Please try again.');
     }
   },
 
