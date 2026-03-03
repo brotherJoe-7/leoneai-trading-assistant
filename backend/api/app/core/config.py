@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings
+from pydantic import field_validator
 from typing import List
 
 
@@ -13,6 +14,14 @@ class Settings(BaseSettings):
 
     # Database
     DATABASE_URL: str = "sqlite:///./leoneai.db"
+
+    @field_validator("DATABASE_URL", mode="before")
+    def assemble_db_connection(cls, v):
+        if not v or not str(v).strip():
+            return "sqlite:///./leoneai.db"
+        if isinstance(v, str) and v.startswith("postgres://"):
+            return v.replace("postgres://", "postgresql://", 1)
+        return v
 
     # JWT
     JWT_SECRET_KEY: str = "your-secret-key-change-in-production"
