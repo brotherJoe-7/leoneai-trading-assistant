@@ -30,21 +30,25 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# ── CORS — allow localhost + all vercel.app subdomains ──────────────
+# ── CORS — allow localhost + all vercel.app and railway.app domains ──────────
 ALLOWED_ORIGINS_EXACT = [
     "http://localhost:5173",
     "http://localhost:5174",
     "http://localhost:3000",
     "https://leoneai.vercel.app",
     "https://leoneai-trading-assistant.vercel.app",
+    "https://leoneai-trading-assistant-9yy0zwcvn-j8288743-8109s-projects.vercel.app",
 ]
 
 
 def is_allowed_origin(origin: str) -> bool:
     if origin in ALLOWED_ORIGINS_EXACT:
         return True
-    # Allow all *.vercel.app subdomains
-    if re.match(r"^https://[\w-]+\.vercel\.app$", origin):
+    # Allow ALL *.vercel.app subdomains (including long preview URLs)
+    if origin.startswith("https://") and origin.endswith(".vercel.app"):
+        return True
+    # Allow railway.app domains
+    if origin.startswith("https://") and origin.endswith(".railway.app"):
         return True
     return False
 
