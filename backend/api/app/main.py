@@ -30,102 +30,49 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# ── CORS — allow localhost + all vercel.app and railway.app domains ──────────
-ALLOWED_ORIGINS_EXACT = [
-    "http://localhost:5173",
-    "http://localhost:5174",
-    "http://localhost:3000",
-    "https://leoneai.vercel.app",
-    "https://leoneai-trading-assistant.vercel.app",
-    "https://leoneai-trading-assistant-9yy0zwcvn-j8288743-8109s-projects.vercel.app",
-]
-
 
 def is_allowed_origin(origin: str) -> bool:
-    if origin in ALLOWED_ORIGINS_EXACT:
+    """Return True for localhost, *.vercel.app and *.railway.app origins."""
+    if not origin:
+        return False
+    if origin.startswith("http://localhost:") or origin.startswith("http://127.0.0.1:"):
         return True
-    # Allow ALL *.vercel.app subdomains (including long preview URLs)
     if origin.startswith("https://") and origin.endswith(".vercel.app"):
         return True
-    # Allow railway.app domains
     if origin.startswith("https://") and origin.endswith(".railway.app"):
         return True
     return False
 
 
-class DynamicCORSMiddleware:
-    """CORS middleware that accepts *.vercel.app via regex."""
-
-    def __init__(self, app):
-        self.app = app
-
-    async def __call__(self, scope, receive, send):
-        if scope["type"] == "http":
-            headers = dict(scope.get("headers", []))
-            origin = headers.get(b"origin", b"").decode("utf-8", errors="ignore")
-
-            async def send_with_cors(message):
-                if (
-                    message["type"] == "http.response.start"
-                    and origin
-                    and is_allowed_origin(origin)
-                ):
-                    headers_list = list(message.get("headers", []))
-                    headers_list += [
-                        (b"access-control-allow-origin", origin.encode()),
-                        (b"access-control-allow-credentials", b"true"),
-                        (
-                            b"access-control-allow-methods",
-                            b"GET, POST, PUT, PATCH, DELETE, OPTIONS",
-                        ),
-                        (
-                            b"access-control-allow-headers",
-                            b"*, Authorization, Content-Type",
-                        ),
-                        (b"vary", b"Origin"),
-                    ]
-                    message = {**message, "headers": headers_list}
-                await send(message)
-
-            # Handle OPTIONS preflight
-            if scope["method"] == "OPTIONS" if "method" in scope else False:
-                await send(
-                    {
-                        "type": "http.response.start",
-                        "status": 200,
-                        "headers": [
-                            (
-                                b"access-control-allow-origin",
-                                origin.encode() if origin else b"*",
-                            ),
-                            (b"access-control-allow-credentials", b"true"),
-                            (
-                                b"access-control-allow-methods",
-                                b"GET, POST, PUT, PATCH, DELETE, OPTIONS",
-                            ),
-                            (
-                                b"access-control-allow-headers",
-                                b"*, Authorization, Content-Type",
-                            ),
-                            (b"content-length", b"0"),
-                        ],
-                    }
-                )
-                await send({"type": "http.response.body", "body": b""})
-                return
-
-            await self.app(scope, receive, send_with_cors)
-        else:
-            await self.app(scope, receive, send)
+CORS_HEADERS = {
+    "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": "Authorization, Content-Type, Accept, Origin, X-Requested-With",
+    "Access-Control-Allow-Credentials": "true",
+    "Access-Control-Max-Age": "600",
+    "Vary": "Origin",
+}
 
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS_EXACT,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+@app.middleware("http")
+async def cors_middleware(request: Request, call_next):
+    """Dynamic CORS — allows all *.vercel.app / *.railway.app / localhost origins."""
+    origin = request.headers.get("origin", "")
+
+    # Handle preflight OPTIONS request
+    if request.method == "OPTIONS":
+        headers = {"Access-Control-Allow-Origin": origin or "*", **CORS_HEADERS}
+        return JSONResponse(status_code=200, content={}, headers=headers)
+
+    # Process normal request
+    response = await call_next(request)
+
+    # Inject CORS headers on all responses
+    if is_allowed_origin(origin):
+        response.headers["Access-Control-Allow-Origin"] = origin
+        for key, value in CORS_HEADERS.items():
+            response.headers[key] = value
+
+    return response
 
 
 # Request logging middleware
