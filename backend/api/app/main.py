@@ -181,10 +181,59 @@ app.include_router(api_router, prefix="/api/v1")
 
 @app.on_event("startup")
 async def startup_event():
-    """Log application startup"""
+    """Log startup and seed default users if DB is empty."""
     logger.info("LeoneAI Trading API starting up...")
     logger.info(f"Environment: {settings.ENVIRONMENT}")
-    logger.info(f"CORS Origins: {settings.CORS_ORIGINS}")
+    logger.info(f"CORS Origins: dynamic (*.vercel.app, *.railway.app, localhost)")
+    await seed_default_users()
+
+
+async def seed_default_users():
+    """Create default accounts if they don't exist (safe to run every startup)."""
+    from app.db.session import SessionLocal
+    from app.crud.user import user as crud_user
+    from app.schemas.user import UserCreate
+
+    default_users = [
+        UserCreate(
+            username="admin",
+            email="admin@leoneai.com",
+            password="admin123",
+            full_name="Admin User",
+            country="Sierra Leone",
+            currency_preference="SLL",
+        ),
+        UserCreate(
+            username="demo",
+            email="demo@leoneai.com",
+            password="demo123",
+            full_name="Demo User",
+            country="Sierra Leone",
+            currency_preference="SLL",
+        ),
+        UserCreate(
+            username="brotherjoe",
+            email="brotherjoe@leoneai.com",
+            password="joe2026",
+            full_name="Brother Joe",
+            country="Sierra Leone",
+            currency_preference="SLL",
+        ),
+    ]
+
+    db = SessionLocal()
+    try:
+        for user_data in default_users:
+            existing = crud_user.get_by_username(db, username=user_data.username)
+            if not existing:
+                crud_user.create(db, obj_in=user_data)
+                logger.info(f"Created default user: {user_data.username}")
+            else:
+                logger.info(f"User already exists: {user_data.username}")
+    except Exception as e:
+        logger.error(f"Failed to seed users: {e}")
+    finally:
+        db.close()
 
 
 @app.on_event("shutdown")
