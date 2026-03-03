@@ -20,5 +20,5 @@ COPY backend/api/ .
 # Expose port (Railway sets $PORT dynamically)
 EXPOSE 8000
 
-# Start the FastAPI app
-CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
+# Start using exec form (no shell needed, no cd needed)
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
