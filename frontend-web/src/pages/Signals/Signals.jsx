@@ -122,8 +122,15 @@ const Signals = () => {
       setLoading(true);
       setError('');
       const data = await signalsAPI.getSignals();
-      if (Array.isArray(data) && data.length > 0) {
-        setLiveSignals(data);
+      // Backend returns {count, signals:[...]} — extract the array
+      const signalArray = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.signals)
+          ? data.signals
+          : null;
+
+      if (signalArray && signalArray.length > 0) {
+        setLiveSignals(signalArray);
       } else {
         setLiveSignals(STATIC_SIGNALS);
       }
@@ -131,7 +138,6 @@ const Signals = () => {
     } catch (err) {
       console.warn('Using static signals — API unavailable:', err.message);
       setLiveSignals(STATIC_SIGNALS);
-      setError('Live data unavailable. Showing cached signals.');
       setLastUpdate(new Date());
     } finally {
       setLoading(false);
