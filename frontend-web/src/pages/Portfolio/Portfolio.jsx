@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { portfolioAPI } from '../../services/api';
 import { formatLeone, formatUSD, formatPercent, usdToLeone } from '../../utils/formatters';
+import CryptoPayment from '../../components/crypto/CryptoPayment/CryptoPayment';
 import styles from './Portfolio.module.css';
 
 const PAYMENT_METHODS = [
@@ -43,6 +44,8 @@ const Portfolio = () => {
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showCryptoPayment, setShowCryptoPayment] = useState(false);
+  const [depositTab, setDepositTab] = useState('local'); // 'local' | 'crypto'
 
   // Form states
   const [selectedAsset, setSelectedAsset] = useState(null);
@@ -406,75 +409,172 @@ const Portfolio = () => {
         <div className={styles.modal} onClick={() => !depositLoading && setShowDepositModal(false)}>
           <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
             <h2>💰 Deposit Funds</h2>
-            {error && <div className={styles.modalError}>{error}</div>}
-            <div className={styles.formGroup}>
-              <label>Amount (SLL — Sierra Leone Leone)</label>
-              <input
-                type="number"
-                value={depositForm.amount}
-                onChange={e => setDepositForm({ ...depositForm, amount: e.target.value })}
-                placeholder="e.g. 100000"
-                className={styles.input}
-                disabled={depositLoading}
-              />
-              {depositForm.amount && (
-                <small className={styles.inputHint}>
-                  ≈ ${(parseFloat(depositForm.amount || 0) / 23700).toFixed(2)} USD
-                </small>
-              )}
+
+            {/* Deposit tabs */}
+            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem' }}>
+              {[
+                ['local', '🏦 Local Payment'],
+                ['crypto', '⛓ Crypto (Blockchain)'],
+              ].map(([tab, lbl]) => (
+                <button
+                  key={tab}
+                  onClick={() => setDepositTab(tab)}
+                  style={{
+                    flex: 1,
+                    padding: '0.6rem 0.5rem',
+                    border: 'none',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    fontWeight: 700,
+                    fontSize: '0.82rem',
+                    transition: 'all 0.2s',
+                    background:
+                      depositTab === tab
+                        ? 'linear-gradient(135deg, #1a56db, #0ea5e9)'
+                        : 'rgba(255,255,255,0.05)',
+                    color: depositTab === tab ? 'white' : '#94a3b8',
+                  }}
+                >
+                  {lbl}
+                </button>
+              ))}
             </div>
-            <div className={styles.formGroup}>
-              <label>Payment Method</label>
-              <select
-                value={depositForm.method}
-                onChange={e =>
-                  setDepositForm({ ...depositForm, method: e.target.value, detail: '' })
-                }
-                className={styles.input}
-                disabled={depositLoading}
-              >
-                {PAYMENT_METHODS.map(m => (
-                  <option key={m.value} value={m.value}>
-                    {m.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className={styles.formGroup}>
-              <label>
-                {getPaymentMethod(depositForm.method)?.type === 'mobile'
-                  ? 'Phone Number'
-                  : getPaymentMethod(depositForm.method)?.type === 'email'
-                    ? 'PayPal Email'
-                    : 'Card Last 4 Digits'}
-              </label>
-              <input
-                type={getPaymentMethod(depositForm.method)?.type === 'email' ? 'email' : 'text'}
-                value={depositForm.detail}
-                onChange={e => setDepositForm({ ...depositForm, detail: e.target.value })}
-                placeholder={getPaymentMethod(depositForm.method)?.placeholder}
-                className={styles.input}
-                disabled={depositLoading}
-              />
-            </div>
-            <div className={styles.modalActions}>
-              <button
-                className={styles.btnSecondary}
-                onClick={() => setShowDepositModal(false)}
-                disabled={depositLoading}
-              >
-                Cancel
-              </button>
-              <button
-                className={styles.btnPrimary}
-                onClick={handleDeposit}
-                disabled={depositLoading}
-              >
-                {depositLoading ? '⏳ Processing...' : '✅ Deposit'}
-              </button>
-            </div>
+
+            {depositTab === 'local' ? (
+              <>
+                {error && <div className={styles.modalError}>{error}</div>}
+                <div className={styles.formGroup}>
+                  <label>Amount (SLL — Sierra Leone Leone)</label>
+                  <input
+                    type="number"
+                    value={depositForm.amount}
+                    onChange={e => setDepositForm({ ...depositForm, amount: e.target.value })}
+                    placeholder="e.g. 100000"
+                    className={styles.input}
+                    disabled={depositLoading}
+                  />
+                  {depositForm.amount && (
+                    <small className={styles.inputHint}>
+                      ≈ ${(parseFloat(depositForm.amount || 0) / 22500).toFixed(2)} USD
+                    </small>
+                  )}
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Payment Method</label>
+                  <select
+                    value={depositForm.method}
+                    onChange={e =>
+                      setDepositForm({ ...depositForm, method: e.target.value, detail: '' })
+                    }
+                    className={styles.input}
+                    disabled={depositLoading}
+                  >
+                    {PAYMENT_METHODS.map(m => (
+                      <option key={m.value} value={m.value}>
+                        {m.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className={styles.formGroup}>
+                  <label>
+                    {getPaymentMethod(depositForm.method)?.type === 'mobile'
+                      ? 'Phone Number'
+                      : getPaymentMethod(depositForm.method)?.type === 'email'
+                        ? 'PayPal Email'
+                        : 'Card Last 4 Digits'}
+                  </label>
+                  <input
+                    type={getPaymentMethod(depositForm.method)?.type === 'email' ? 'email' : 'text'}
+                    value={depositForm.detail}
+                    onChange={e => setDepositForm({ ...depositForm, detail: e.target.value })}
+                    placeholder={getPaymentMethod(depositForm.method)?.placeholder}
+                    className={styles.input}
+                    disabled={depositLoading}
+                  />
+                </div>
+                <div className={styles.modalActions}>
+                  <button
+                    className={styles.btnSecondary}
+                    onClick={() => setShowDepositModal(false)}
+                    disabled={depositLoading}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className={styles.btnPrimary}
+                    onClick={handleDeposit}
+                    disabled={depositLoading}
+                  >
+                    {depositLoading ? '⏳ Processing...' : '✅ Deposit'}
+                  </button>
+                </div>
+              </>
+            ) : (
+              /* Crypto tab content */
+              <div>
+                <div className={styles.formGroup}>
+                  <label>Amount (SLL — Sierra Leone Leone)</label>
+                  <input
+                    type="number"
+                    value={depositForm.amount}
+                    onChange={e => setDepositForm({ ...depositForm, amount: e.target.value })}
+                    placeholder="e.g. 100000"
+                    className={styles.input}
+                  />
+                  {depositForm.amount && (
+                    <small className={styles.inputHint}>
+                      ≈ ${(parseFloat(depositForm.amount || 0) / 22500).toFixed(2)} USD
+                    </small>
+                  )}
+                </div>
+                <button
+                  className={styles.btnPrimary}
+                  style={{ width: '100%', marginTop: '0.5rem' }}
+                  onClick={() => {
+                    if (!depositForm.amount || parseFloat(depositForm.amount) <= 0) {
+                      setError('Please enter a deposit amount first.');
+                      return;
+                    }
+                    setError('');
+                    setShowDepositModal(false);
+                    setShowCryptoPayment(true);
+                  }}
+                >
+                  ⛓ Pay with Crypto (BTC / ETH / USDT)
+                </button>
+                <p
+                  style={{
+                    fontSize: '0.75rem',
+                    color: '#64748b',
+                    marginTop: '0.75rem',
+                    textAlign: 'center',
+                    lineHeight: 1.5,
+                  }}
+                >
+                  Powered by on-chain blockchain verification. Supports Bitcoin, Ethereum, and USDT
+                  on ERC-20 & TRC-20 networks.
+                </p>
+              </div>
+            )}
           </div>
         </div>
+      )}
+
+      {/* Blockchain Crypto Payment Modal */}
+      {showCryptoPayment && (
+        <CryptoPayment
+          amountSLL={depositForm.amount || 0}
+          onClose={() => setShowCryptoPayment(false)}
+          onSuccess={() => {
+            setShowCryptoPayment(false);
+            setSuccessMessage(
+              'Crypto payment submitted! Your balance will be updated after blockchain confirmation.'
+            );
+            setShowSuccessModal(true);
+            fetchPortfolioData();
+          }}
+        />
       )}
 
       {/* Withdraw Modal */}

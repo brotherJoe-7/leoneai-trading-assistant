@@ -1,0 +1,104 @@
+.ticker {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background: #0d1117;
+  border-bottom: 1px solid rgba(26, 86, 219, 0.3);
+  display: flex;
+  align-items: center;
+  z-index: 500;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+}
+
+.label {
+  background: #1a56db;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.25rem 0.75rem;
+  letter-spacing: 1.5px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  border-right: 1px solid rgba(26,86,219,0.5);
+}
+
+.track {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.scroll {
+  display: flex;
+  align-items: center;
+  animation: tickerScroll 40s linear infinite;
+  will-change: transform;
+}
+
+.scroll:hover {
+  animation-play-state: paused;
+}
+
+@keyframes tickerScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0 0.25rem;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.coinDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.sym {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.3px;
+}
+
+.price {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  font-variant-numeric: tabular-nums;
+}
+
+.pct {
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.up   { color: #22c55e; }
+.down { color: #ef4444; }
+
+.divider {
+  width: 1px;
+  height: 18px;
+  background: rgba(255,255,255,0.08);
+  margin: 0 0.75rem;
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .label { padding: 0.25rem 0.5rem; font-size: 0.6rem; }
+  .sym   { font-size: 0.72rem; }
+  .price { font-size: 0.75rem; }
+  .pct   { font-size: 0.68rem; }
+}
