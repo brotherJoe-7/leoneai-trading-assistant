@@ -1,36 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
 :root {
-  /* ─── Brand Colors ──────────────────────────────────────────────────── */
-  --colors-primary:       #1a56db;   /* Professional Blue */
-  --colors-primary-dark:  #1043b5;
-  --colors-primary-light: #3b82f6;
+  /* ══════════════════════════════════════════════════════════════
+     LeoneAI "The Freetown Standard" — Unique Design System
+     Sierra Leone inspired: deep ocean, gold, emerald green
+  ══════════════════════════════════════════════════════════════ */
 
-  --colors-secondary:     #0ea5e9;   /* Sky Blue accent */
-  --colors-secondary-dark:#0284c7;
+  /* ─── Brand Identity ─────────────────────────────────────────── */
+  --leone-gold:        #d4a832;   /* LeoneAI primary gold */
+  --leone-gold-light:  #f0c842;
+  --leone-gold-dark:   #a87c18;
+  --leone-green:       #1a7a4a;   /* Sierra Leone emerald */
+  --leone-green-light: #22a062;
+  --leone-green-dark:  #115234;
 
-  /* ─── Sierra Leone accent (for identity elements only) ──────────────── */
-  --colors-sl-green:      #1EB53A;   /* SL flag green — keep for identity */
-  --colors-sl-blue:       #0072C6;   /* SL flag blue */
+  /* ─── Primary (Gold-based) ───────────────────────────────────── */
+  --colors-primary:       #d4a832;
+  --colors-primary-dark:  #a87c18;
+  --colors-primary-light: #f0c842;
+  --primary-blue:         #d4a832;   /* Legacy alias → now gold */
 
-  /* ─── Backgrounds (dark theme) ─────────────────────────────────────── */
-  --colors-background:    #0b0f1a;
-  --colors-surface:       #131929;
-  --colors-surface-light: #1e2a3d;
+  /* ─── Secondary (Emerald Green) ─────────────────────────────── */
+  --colors-secondary:      #1a7a4a;
+  --colors-secondary-dark: #115234;
+  --colors-secondary-light:#22a062;
 
-  /* ─── Text ──────────────────────────────────────────────────────────── */
-  --colors-text:          #f0f4ff;
-  --colors-text-secondary:#94a3b8;
-  --colors-text-disabled: #4b5563;
+  /* ─── Backgrounds (Deep Ocean) ───────────────────────────────── */
+  --colors-background:    #050d1a;
+  --colors-surface:       #0a1628;
+  --colors-surface-light: #0f2040;
+  --bg-primary:           #050d1a;
+  --bg-secondary:         #0a1628;
+  --bg-tertiary:          #0f2040;
 
-  /* ─── Borders ───────────────────────────────────────────────────────── */
-  --colors-border:        #1e2a3d;
-  --colors-border-light:  #2d3e57;
+  /* ─── Text ────────────────────────────────────────────────────── */
+  --colors-text:           #f0f4f8;
+  --colors-text-secondary: #8fa6c0;
+  --colors-text-disabled:  #3d556e;
+  --text-primary:          #f0f4f8;
+  --text-secondary:        #8fa6c0;
+  --text-tertiary:         #3d556e;
 
-  /* ─── Trading Status Colors ─────────────────────────────────────────── */
-  --colors-buy:    #22c55e;   /* Green — buy/profit */
-  --colors-sell:   #ef4444;   /* Red — sell/loss */
-  --colors-hold:   #f59e0b;   /* Amber — hold/warning */
+  /* ─── Borders ─────────────────────────────────────────────────── */
+  --colors-border:        rgba(212, 168, 50, 0.15);
+  --colors-border-light:  rgba(212, 168, 50, 0.25);
+  --border-primary:       rgba(212, 168, 50, 0.12);
+  --border-secondary:     rgba(212, 168, 50, 0.22);
 
-  /* ─── Spacing ───────────────────────────────────────────────────────── */
+  /* ─── Trading Status ──────────────────────────────────────────── */
+  --colors-buy:    #22c55e;
+  --colors-sell:   #ef4444;
+  --colors-hold:   #f59e0b;
+
+  /* ─── Gradients ───────────────────────────────────────────────── */
+  --gradient-primary:  linear-gradient(135deg, #d4a832 0%, #f0c842 100%);
+  --gradient-green:    linear-gradient(135deg, #1a7a4a 0%, #22a062 100%);
+  --gradient-dark:     linear-gradient(180deg, #0a1628 0%, #050d1a 100%);
+  --gradient-card:     linear-gradient(145deg, #0f2040 0%, #0a1628 100%);
+  --gradient-gold-glow: 0 0 30px rgba(212, 168, 50, 0.2);
+
+  /* ─── Spacing ─────────────────────────────────────────────────── */
   --spacing-xs:  4px;
   --spacing-sm:  8px;
   --spacing-md:  16px;
@@ -38,63 +67,43 @@
   --spacing-xl:  32px;
   --spacing-xxl: 48px;
 
-  /* ─── Typography ────────────────────────────────────────────────────── */
-  --font-family:    'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-size-xs:   12px;
-  --font-size-sm:   14px;
-  --font-size-md:   16px;
+  /* ─── Typography ──────────────────────────────────────────────── */
+  --font-family:         'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-family-heading: 'Sora', 'Inter', sans-serif;
+  --font-size-xs:   11px;
+  --font-size-sm:   13px;
+  --font-size-md:   15px;
   --font-size-lg:   18px;
   --font-size-xl:   24px;
   --font-size-xxl:  32px;
+  --font-size-xxxl: 48px;
 
-  /* ─── Border Radius ─────────────────────────────────────────────────── */
-  --radius-sm:   4px;
-  --radius-md:   8px;
-  --radius-lg:   12px;
-  --radius-xl:   16px;
+  /* ─── Border Radius ───────────────────────────────────────────── */
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   16px;
+  --radius-xl:   22px;
   --radius-full: 9999px;
 
-  /* ─── Shadows ───────────────────────────────────────────────────────── */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
-  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.8);
-  --shadow-blue: 0 0 20px rgba(26, 86, 219, 0.25);
+  /* ─── Shadows ─────────────────────────────────────────────────── */
+  --shadow-sm:   0 1px 4px rgba(0,0,0,0.6);
+  --shadow-md:   0 4px 16px rgba(0,0,0,0.7);
+  --shadow-lg:   0 12px 40px rgba(0,0,0,0.85);
+  --shadow-gold: 0 4px 20px rgba(212, 168, 50, 0.25);
+  --shadow-glow: 0 0 40px rgba(212, 168, 50, 0.15);
 
-  /* ─── Transitions ───────────────────────────────────────────────────── */
-  --transition-fast:   150ms ease;
-  --transition-normal: 250ms ease;
-  --transition-slow:   350ms ease;
+  /* ─── Transitions ─────────────────────────────────────────────── */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.25s ease;
+  --transition-slow: 0.4s ease;
 
-  /* ─── Legacy aliases (used by older components) ─────────────────────── */
-  --bg-primary:         var(--colors-background);
-  --bg-secondary:       var(--colors-surface);
-  --bg-tertiary:        var(--colors-surface-light);
-  --bg-card:            var(--colors-surface);
-  --text-primary:       var(--colors-text);
-  --text-secondary:     var(--colors-text-secondary);
-  --text-tertiary:      var(--colors-text-disabled);
-  --border-primary:     var(--colors-border);
-  --border-secondary:   var(--colors-border-light);
-
-  /* Primary green legacy — points to buy color (kept for trading indicators) */
-  --primary-green:       var(--colors-buy);
-  --primary-green-light: #34d399;
-
-  /* Primary blue — new brand token */
-  --primary-blue:        var(--colors-primary);
-  --primary-blue-light:  var(--colors-primary-light);
-
-  /* Status colors */
-  --status-success: var(--colors-buy);
-  --status-danger:  var(--colors-sell);
-  --status-warning: var(--colors-hold);
-  --status-info:    var(--colors-primary);
-
-  /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #1a56db 0%, #0ea5e9 100%);
-  --gradient-dark:    linear-gradient(135deg, #0b0f1a 0%, #131929 100%);
-
-  /* Shadows */
-  --shadow-glow: 0 0 20px rgba(26, 86, 219, 0.35);
-  --transition-base: 200ms ease;
+  /* ─── Legacy aliases (keep existing components working) ───────── */
+  --bg-card:     #0a1628;
+  --bg-hover:    rgba(212, 168, 50, 0.06);
 }
+
+/* ── Scrollbar ─────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #050d1a; }
+::-webkit-scrollbar-thumb { background: rgba(212, 168, 50, 0.3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(212, 168, 50, 0.5); }

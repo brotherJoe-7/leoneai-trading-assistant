@@ -71,22 +71,33 @@ async def get_holdings(
 async def get_stats(
     current_user: User = Depends(get_current_active_user), db: Session = Depends(get_db)
 ):
-    """Get portfolio statistics for dashboard"""
+    """Get portfolio statistics for dashboard — returns real user balance"""
     try:
-        summary = await portfolio_service.get_portfolio_summary(db, current_user.id)
+        portfolio = portfolio_service.get_or_create_portfolio(db, current_user.id)
+        balance_sll = (
+            getattr(portfolio, "cash_balance_leone", None)
+            or getattr(current_user, "balance_sll", 0)
+            or 0
+        )
+
         return {
-            "total_value": summary.total_value_leone,
-            "daily_change": 0.0,
-            "total_profit": summary.total_pnl,
-            "profit_percent": (summary.total_pnl / max(summary.total_value_leone, 1))
-            * 100,
-        }
-    except Exception:
-        return {
-            "total_value": current_user.balance_sll or 0,
+            "total_value": float(balance_sll),
             "daily_change": 0.0,
             "total_profit": 0.0,
             "profit_percent": 0.0,
+            "cash_balance_sll": float(balance_sll),
+            "currency": "SLL",
+        }
+    except Exception:
+        # Absolute fallback — always show real user balance_sll
+        balance = getattr(current_user, "balance_sll", 0) or 0
+        return {
+            "total_value": float(balance),
+            "daily_change": 0.0,
+            "total_profit": 0.0,
+            "profit_percent": 0.0,
+            "cash_balance_sll": float(balance),
+            "currency": "SLL",
         }
 
 

@@ -1,335 +1,371 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import marketService from '../../services/marketService';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './Landing.module.css';
+
+const TICKER_PAIRS = [
+  { sym: 'BTC/SLL', stream: 'btcusdt', mul: 22500, icon: '₿', color: '#f7931a' },
+  { sym: 'ETH/SLL', stream: 'ethusdt', mul: 22500, icon: 'Ξ', color: '#627eea' },
+  { sym: 'USD/SLL', stream: null, price: 22500, change: 0.12, icon: '$', color: '#22c55e' },
+  { sym: 'GBP/SLL', stream: null, price: 28600, change: -0.08, icon: '£', color: '#d4a832' },
+];
+
+const FEATURES = [
+  {
+    icon: '🤖',
+    title: 'AI Market Intelligence',
+    desc: 'Our engine scans global markets 24/7, identifying patterns and giving you clear BUY/SELL/HOLD signals with reasoning.',
+  },
+  {
+    icon: '⛓',
+    title: 'Blockchain Payments',
+    desc: 'Deposit via Bitcoin, Ethereum, or USDT. On-chain verified, transparent, and instant — alongside Orange Money & Afrimoney.',
+  },
+  {
+    icon: '🇸🇱',
+    title: 'Built for Sierra Leone',
+    desc: 'Trade in Leones (SLL). Fund via Orange Money and Afrimoney. Analysis tailored for our local and regional markets.',
+  },
+  {
+    icon: '📊',
+    title: 'Professional Trading Tools',
+    desc: 'Real-time charts, order book, stop-loss, limit orders — everything professional traders use, simplified for everyone.',
+  },
+  {
+    icon: '📚',
+    title: 'Learn to Trade Free',
+    desc: 'New to trading? Our free courses take you from absolute beginner to confident trader, in plain Sierra Leonean language.',
+  },
+  {
+    icon: '🔒',
+    title: 'Bank-Grade Security',
+    desc: 'JWT authentication, encrypted data, and 2FA support. Your funds and information are always protected.',
+  },
+];
+
+const TESTIMONIALS = [
+  {
+    name: 'Abubakarr K.',
+    role: 'Small Business Owner, Bo',
+    msg: 'LeoneAI di help mi understand di market better. I done make profit on mi first BTC trade!',
+  },
+  {
+    name: 'Fatmata S.',
+    role: 'Nurse, Freetown',
+    msg: 'Di Afrimoney deposit is easy and di AI signals are simple to understand. I start trading now.',
+  },
+  {
+    name: 'Mohamed J.',
+    role: 'Student, Njala University',
+    msg: 'The learning section taught me everything. The AI assistant guides you step by step. Game changer!',
+  },
+];
 
 const Landing = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('hot');
-  const [marketData, setMarketData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [email, setEmail] = useState('');
+  const [prices, setPrices] = useState({});
 
-  // Tab configuration for fetching different data
-  const tabConfig = {
-    hot: { label: 'Hot', fetchFn: () => marketService.getTrendingCoins() },
-    new: { label: 'New', fetchFn: () => marketService.getNewListings() },
-    gainers: { label: 'Top Gainers', fetchFn: () => marketService.getTopGainers() },
-    volume: { label: 'Top Volume', fetchFn: () => marketService.getTopVolume() },
-  };
-
-  // Fetch market data based on active tab
-  const fetchMarketData = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const data = await tabConfig[activeTab].fetchFn();
-      setMarketData(data);
-    } catch (err) {
-      console.error('Error fetching market data:', err);
-      setError('Failed to load market data. Please try again.');
-
-      // Fallback to cached data or default
-      setMarketData([
-        {
-          symbol: 'BTC',
-          name: 'Bitcoin',
-          priceUsd: 68696.8,
-          priceSll: 1628074360,
-          change24h: -2.47,
-        },
-        {
-          symbol: 'ETH',
-          name: 'Ethereum',
-          priceUsd: 2015.63,
-          priceSll: 47770521,
-          change24h: -4.84,
-        },
-        { symbol: 'BNB', name: 'BNB', priceUsd: 619.28, priceSll: 14676936, change24h: -3.06 },
-        { symbol: 'SOL', name: 'Solana', priceUsd: 82.6, priceSll: 1957620, change24h: -5.28 },
-        { symbol: 'XRP', name: 'XRP', priceUsd: 1.4, priceSll: 33180, change24h: -3.12 },
-      ]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Fetch data when component mounts or tab changes
   useEffect(() => {
-    fetchMarketData();
-  }, [activeTab]);
-
-  // Auto-refresh every 30 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      fetchMarketData();
-    }, 30000); // 30 seconds
-
+    // Fetch live BTC/ETH prices
+    const fetchPrices = async () => {
+      try {
+        const r = await fetch(
+          'https://api.binance.com/api/v3/ticker/24hr?symbols=["BTCUSDT","ETHUSDT"]'
+        );
+        const data = await r.json();
+        const p = {};
+        data.forEach(d => {
+          p[d.symbol] = {
+            price: parseFloat(d.lastPrice),
+            change: parseFloat(d.priceChangePercent),
+          };
+        });
+        setPrices(p);
+      } catch (_) {}
+    };
+    fetchPrices();
+    const interval = setInterval(fetchPrices, 30000);
     return () => clearInterval(interval);
-  }, [activeTab]);
-
-  // Handle sign up
-  const handleSignUp = () => {
-    if (email) {
-      navigate('/register', { state: { email } });
-    } else {
-      navigate('/register');
-    }
-  };
-
-  // Handle Google Sign-In
-  const handleGoogleSignIn = () => {
-    // TODO: Implement Google OAuth
-    alert('Google Sign-In coming soon! For now, please use email registration.');
-  };
-
-  // Handle Apple Sign-In
-  const handleAppleSignIn = () => {
-    // TODO: Implement Apple OAuth
-    alert('Apple Sign-In coming soon! For now, please use email registration.');
-  };
+  }, []);
 
   return (
     <div className={styles.landing}>
-      {/* Navbar */}
-      <nav className={styles.navbar}>
-        <div className={styles.navLeft}>
-          <div className={styles.logo}>
-            <span className={styles.logoIcon}>🇸🇱</span>
-            <span className={styles.logoText}>LeoneAI</span>
-          </div>
-          <div className={styles.navLinks}>
-            <Link to="/markets">Buy Crypto</Link>
-            <Link to="/markets">Markets</Link>
-            <Link to="/trading">Trade</Link>
-            <Link to="/trading">Futures</Link>
-            <Link to="/learn">Earn</Link>
+      {/* ── Nav ── */}
+      <nav className={styles.nav}>
+        <div className={styles.navLogo}>
+          <span className={styles.flag}>🇸🇱</span>
+          <div>
+            <span className={styles.logoName}>LeoneAI</span>
+            <span className={styles.logoTag}>AI Trading Platform</span>
           </div>
         </div>
-        <div className={styles.navRight}>
-          <Link to="/login" className={styles.loginBtn}>
-            Log In
-          </Link>
-          <Link to="/register" className={styles.signupBtn}>
-            Sign Up
-          </Link>
-          <div className={styles.settingsIcons}>
-            <span>🌐</span>
-            <span>🌙</span>
-          </div>
+        <div className={styles.navLinks}>
+          <a href="#features">Features</a>
+          <a href="#markets">Markets</a>
+          <a href="#about">About</a>
+        </div>
+        <div className={styles.navActions}>
+          <button className={styles.loginBtn} onClick={() => navigate('/login')}>
+            Sign In
+          </button>
+          <button className={styles.registerBtn} onClick={() => navigate('/register')}>
+            Get Started Free
+          </button>
         </div>
       </nav>
 
-      {/* Hero Section */}
+      {/* ── Hero ── */}
       <section className={styles.hero}>
+        <div className={styles.heroBackground}>
+          <div className={styles.heroOrb1} />
+          <div className={styles.heroOrb2} />
+          <div className={styles.heroGrid} />
+        </div>
         <div className={styles.heroContent}>
-          <h1>
-            <span className={styles.highlight}>Trade Crypto</span>
-            <br />
-            WITH LEONE (SLL)
+          <div className={styles.heroBadge}>
+            <span className={styles.heroBadgeDot} />
+            <span>🇸🇱 Proudly Made in Sierra Leone</span>
+          </div>
+          <h1 className={styles.heroTitle}>
+            Trade Smarter <br />
+            with <span className={styles.heroGold}>AI Intelligence</span>
           </h1>
-          <p className={styles.heroSub}>The Most Trusted Cryptocurrency Exchange in Sierra Leone</p>
-
-          <div className={styles.heroStats}>
-            <div className={styles.statItem}>
-              <span className={styles.statIcon}>🛡️</span>
-              <div className={styles.statText}>
-                <strong>Secure</strong>
-                <span>Asset Fund</span>
-              </div>
-            </div>
-            <div className={styles.statItem}>
-              <span className={styles.statIcon}>🇸🇱</span>
-              <div className={styles.statText}>
-                <strong>Local</strong>
-                <span>Payment Methods</span>
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.heroActions}>
-            <div className={styles.inputGroup}>
-              <input
-                type="text"
-                placeholder="Email/Phone number"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                onKeyPress={e => e.key === 'Enter' && handleSignUp()}
-              />
-              <button className={styles.ctaBtn} onClick={handleSignUp}>
-                Sign Up
-              </button>
-            </div>
-            <div className={styles.socialAuth}>
-              <button
-                className={styles.socialBtn}
-                onClick={handleGoogleSignIn}
-                title="Sign in with Google"
-              >
-                <svg viewBox="0 0 24 24" width="20" height="20">
-                  <path
-                    fill="#4285F4"
-                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                  />
-                  <path
-                    fill="#34A853"
-                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                  />
-                  <path
-                    fill="#FBBC05"
-                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                  />
-                  <path
-                    fill="#EA4335"
-                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                  />
-                </svg>
-              </button>
-              <button
-                className={styles.socialBtn}
-                onClick={handleAppleSignIn}
-                title="Sign in with Apple"
-              >
-                <svg viewBox="0 0 24 24" width="20" height="20">
-                  <path
-                    fill="currentColor"
-                    d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"
-                  />
-                </svg>
-              </button>
-              <button className={styles.socialBtn} title="QR Code Sign-In">
-                QR
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div className={styles.heroImage}>{/* Abstract Phone/Chart Graphic could go here */}</div>
-      </section>
-
-      {/* Market Overview */}
-      <section className={styles.markets}>
-        <div className={styles.marketTabs}>
-          {Object.entries(tabConfig).map(([key, config]) => (
-            <button
-              key={key}
-              className={`${styles.tab} ${activeTab === key ? styles.active : ''}`}
-              onClick={() => setActiveTab(key)}
-            >
-              {config.label}
+          <p className={styles.heroDesc}>
+            LeoneAI is Sierra Leone's first AI-powered trading platform. Get real-time market
+            signals, trade Bitcoin, ETH, and Forex — all in Sierra Leone Leones. Fund with Orange
+            Money, Afrimoney, or crypto. No experience needed.
+          </p>
+          <div className={styles.heroCTA}>
+            <button className={styles.ctaPrimary} onClick={() => navigate('/register')}>
+              Start Trading Free →
             </button>
-          ))}
-        </div>
-
-        {error && (
-          <div className={styles.errorBanner}>
-            <span>⚠️</span> {error}
+            <button className={styles.ctaSecondary} onClick={() => navigate('/login')}>
+              Sign In to Dashboard
+            </button>
           </div>
-        )}
-
-        {loading ? (
-          <div className={styles.loadingGrid}>
-            {[...Array(5)].map((_, idx) => (
-              <div key={idx} className={styles.skeletonCard}>
-                <div className={styles.skeletonHeader}></div>
-                <div className={styles.skeletonPrice}></div>
-                <div className={styles.skeletonSub}></div>
+          <div className={styles.heroStats}>
+            {[
+              { val: '10+', label: 'AI Signals Daily' },
+              { val: 'SLL', label: 'Native Currency' },
+              { val: '24/7', label: 'Market Coverage' },
+              { val: 'Free', label: 'To Get Started' },
+            ].map((s, i) => (
+              <div key={i} className={styles.heroStat}>
+                <strong>{s.val}</strong>
+                <span>{s.label}</span>
               </div>
             ))}
           </div>
-        ) : (
-          <div className={styles.marketGrid}>
-            {marketData.slice(0, 5).map((item, idx) => (
-              <div key={item.id || idx} className={styles.marketCard}>
-                <div className={styles.cardHeader}>
-                  <span className={styles.coinSymbol}>{item.symbol}</span>
-                  <span
-                    className={`${styles.change} ${item.change24h >= 0 ? styles.up : styles.down}`}
-                  >
-                    {item.change24h >= 0 ? '+' : ''}
-                    {item.change24h?.toFixed(2)}%
+        </div>
+
+        {/* Live Price Cards */}
+        <div className={styles.heroPrices}>
+          <div className={styles.priceCardHeader}>
+            <div className={styles.liveIndicator}>
+              <span />
+            </div>
+            <span>Live Market Prices</span>
+          </div>
+          {TICKER_PAIRS.map((pair, i) => {
+            const data =
+              pair.stream === 'btcusdt'
+                ? prices['BTCUSDT']
+                : pair.stream === 'ethusdt'
+                  ? prices['ETHUSDT']
+                  : null;
+            const rawPrice = data?.price || pair.price || 0;
+            const sllPrice = pair.mul ? rawPrice * pair.mul : rawPrice;
+            const change = data?.change ?? pair.change ?? 0;
+            return (
+              <div key={i} className={styles.priceCard}>
+                <div className={styles.priceCoin}>
+                  <span style={{ color: pair.color, fontWeight: 800, fontSize: '1.1rem' }}>
+                    {pair.icon}
+                  </span>
+                  <span className={styles.priceSym}>{pair.sym}</span>
+                </div>
+                <div className={styles.priceRight}>
+                  <span className={styles.priceVal}>
+                    Le {Math.round(sllPrice).toLocaleString()}
+                  </span>
+                  <span className={`${styles.priceChg} ${change >= 0 ? styles.up : styles.down}`}>
+                    {change >= 0 ? '+' : ''}
+                    {change.toFixed(2)}%
                   </span>
                 </div>
-                <div className={styles.price}>
-                  $
-                  {item.priceUsd?.toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
-                </div>
-                <div className={styles.priceSll}>
-                  ≈ Le {item.priceSll?.toLocaleString('en-US', { maximumFractionDigits: 0 })}
-                </div>
               </div>
-            ))}
-          </div>
-        )}
-
-        <div className={styles.viewAll}>
-          <Link to="/markets">View All 350+ Coins &gt;</Link>
+            );
+          })}
+          <button className={styles.pricesViewAll} onClick={() => navigate('/login')}>
+            View All Markets →
+          </button>
         </div>
       </section>
 
-      {/* Footer */}
+      {/* ── Features ── */}
+      <section className={styles.features} id="features">
+        <div className={styles.sectionHeader}>
+          <span className={styles.sectionTag}>Why LeoneAI</span>
+          <h2 className={styles.sectionTitle}>Everything You Need to Trade Like a Pro</h2>
+          <p className={styles.sectionDesc}>
+            Built specifically for Sierra Leone's market — combining global trading tools with local
+            payment methods and AI intelligence.
+          </p>
+        </div>
+        <div className={styles.featureGrid}>
+          {FEATURES.map((f, i) => (
+            <div key={i} className={styles.featureCard}>
+              <div className={styles.featureIcon}>{f.icon}</div>
+              <h3 className={styles.featureTitle}>{f.title}</h3>
+              <p className={styles.featureDesc}>{f.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── AI Showcase ── */}
+      <section className={styles.aiShowcase}>
+        <div className={styles.aiShowcaseContent}>
+          <span className={styles.sectionTag}>AI-Powered</span>
+          <h2 className={styles.sectionTitle}>
+            Your Personal Trading <span className={styles.heroGold}>AI Assistant</span>
+          </h2>
+          <p className={styles.sectionDesc}>
+            Our AI engine analyzes market data continuously — RSI, MACD, support/resistance, volume
+            patterns — and converts complex signals into simple, actionable advice even a first-time
+            trader can follow.
+          </p>
+          <div className={styles.aiFeatureList}>
+            {[
+              'Scans 20+ trading pairs 24/7',
+              'Explains reasoning in plain language',
+              'Confidence score for every signal',
+              'SLL-denominated entry & exit prices',
+              'Alerts when high-confidence signals are detected',
+            ].map((item, i) => (
+              <div key={i} className={styles.aiFeatureItem}>
+                <span className={styles.checkIcon}>✓</span>
+                <span>{item}</span>
+              </div>
+            ))}
+          </div>
+          <button
+            className={styles.ctaPrimary}
+            onClick={() => navigate('/register')}
+            style={{ marginTop: '2rem', display: 'inline-block' }}
+          >
+            Try AI Signals Free →
+          </button>
+        </div>
+        <div className={styles.aiShowcaseCard}>
+          <div className={styles.mockSignal}>
+            <div className={styles.mockHeader}>
+              <span>🤖 AI Market Analysis</span>
+              <span className={styles.mockLive}>LIVE</span>
+            </div>
+            {[
+              {
+                pair: 'BTC/SLL',
+                action: 'BUY',
+                conf: 87,
+                reason: 'RSI oversold at 28. MACD bullish crossover.',
+              },
+              {
+                pair: 'USD/SLL',
+                action: 'BUY',
+                conf: 93,
+                reason: 'Import demand surge. Breakout confirmed.',
+              },
+              {
+                pair: 'ETH/SLL',
+                action: 'HOLD',
+                conf: 61,
+                reason: 'Consolidating above key support.',
+              },
+            ].map((s, i) => (
+              <div key={i} className={styles.mockSig}>
+                <div className={`${styles.mockAction} ${styles[`mock${s.action}`]}`}>
+                  {s.action}
+                </div>
+                <div className={styles.mockInfo}>
+                  <span className={styles.mockPair}>{s.pair}</span>
+                  <span className={styles.mockReason}>{s.reason}</span>
+                </div>
+                <div className={styles.mockConf}>{s.conf}%</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Testimonials ── */}
+      <section className={styles.testimonials}>
+        <div className={styles.sectionHeader}>
+          <span className={styles.sectionTag}>Community</span>
+          <h2 className={styles.sectionTitle}>Sierra Leoneans Are Already Trading</h2>
+        </div>
+        <div className={styles.testimonialGrid}>
+          {TESTIMONIALS.map((t, i) => (
+            <div key={i} className={styles.testimonialCard}>
+              <p className={styles.testimonialMsg}>"{t.msg}"</p>
+              <div className={styles.testimonialAuthor}>
+                <div className={styles.testimonialAvatar}>{t.name[0]}</div>
+                <div>
+                  <strong>{t.name}</strong>
+                  <span>{t.role}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── CTA Banner ── */}
+      <section className={styles.ctaBanner}>
+        <div className={styles.ctaBannerGlow} />
+        <h2>Ready to Start Trading?</h2>
+        <p>
+          Join thousands of Sierra Leoneans trading smarter with AI. Free to start, no experience
+          needed.
+        </p>
+        <button className={styles.ctaPrimary} onClick={() => navigate('/register')}>
+          Create Free Account →
+        </button>
+      </section>
+
+      {/* ── Footer ── */}
       <footer className={styles.footer}>
-        <div className={styles.footerLinks}>
-          <div className={styles.col}>
-            <h4>About Us</h4>
-            <Link to="/about">About</Link>
-            <a href="#">Careers</a>
-            <a href="#">Announcements</a>
-            <a href="#">News</a>
-            <a href="#">Press</a>
-            <a href="#">Legal</a>
-            <a href="#">Terms</a>
-            <a href="#">Privacy</a>
+        <div className={styles.footerTop}>
+          <div className={styles.footerBrand}>
+            <div className={styles.footerLogo}>🇸🇱 LeoneAI</div>
+            <p>Sierra Leone's first AI-powered trading platform. Built with ❤️ in Freetown.</p>
           </div>
-          <div className={styles.col}>
-            <h4>Products</h4>
-            <Link to="/markets">Exchange</Link>
-            <Link to="/markets">Buy Crypto</Link>
-            <a href="#">Pay</a>
-            <Link to="/learn">Academy</Link>
-            <a href="#">Launchpool</a>
-            <a href="#">Auto-Invest</a>
-          </div>
-          <div className={styles.col}>
-            <h4>Business</h4>
-            <a href="#">P2P Merchant</a>
-            <a href="#">P2Pro Merchant</a>
-            <a href="#">Listing Application</a>
-            <a href="#">Labs</a>
-            <a href="#">Institutional</a>
-          </div>
-          <div className={styles.col}>
-            <h4>Service</h4>
-            <a href="#">Affiliate</a>
-            <a href="#">Referral</a>
-            <a href="#">OTC Trading</a>
-            <a href="#">Historical Data</a>
-            <a href="#">Proof of Reserves</a>
-          </div>
-          <div className={styles.col}>
-            <h4>Support</h4>
-            <a href="#">24/7 Chat Support</a>
-            <a href="#">Support Center</a>
-            <a href="#">Product Feedback</a>
-            <a href="#">Fees</a>
-            <a href="#">Trading Rules</a>
-            <a href="#">LeoneAI Verify</a>
+          <div className={styles.footerLinks}>
+            <div>
+              <h4>Platform</h4>
+              <a onClick={() => navigate('/login')}>Dashboard</a>
+              <a onClick={() => navigate('/login')}>Markets</a>
+              <a onClick={() => navigate('/login')}>AI Signals</a>
+              <a onClick={() => navigate('/login')}>Pro Trading</a>
+            </div>
+            <div>
+              <h4>Learn</h4>
+              <a onClick={() => navigate('/login')}>Beginner Guide</a>
+              <a onClick={() => navigate('/login')}>Trading Basics</a>
+              <a onClick={() => navigate('/login')}>AI Trading</a>
+            </div>
+            <div>
+              <h4>Support</h4>
+              <a>Contact Us</a>
+              <a>WhatsApp</a>
+              <a>FAQ</a>
+            </div>
           </div>
         </div>
         <div className={styles.footerBottom}>
-          <p>LeoneAI © 2024</p>
-          <div className={styles.socials}>
-            <span>Discord</span>
-            <span>Telegram</span>
-            <span>TikTok</span>
-            <span>Facebook</span>
-            <span>Twitter</span>
-            <span>Instagram</span>
+          <span>© 2026 LeoneAI. Sierra Leone's AI Trading Platform. All rights reserved.</span>
+          <div style={{ display: 'flex', gap: '1rem', color: '#3d556e', fontSize: '0.75rem' }}>
+            <span>Privacy Policy</span>
+            <span>Terms of Service</span>
           </div>
         </div>
       </footer>
